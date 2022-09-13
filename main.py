@@ -1,5 +1,6 @@
 from PySimpleGUI import PySimpleGUI as sg
 from PIL import Image
+import math
 import os
 Image.MAX_IMAGE_PIXELS = 933120000
 import time
@@ -33,9 +34,26 @@ while True:
                 img = Image.open(image)
                 icc = img.info.get('icc_profile')
                 if img.mode in ("RGBA", "P"): img = img.convert("RGB")
-                if values['type'] == '.webp': img.save(os.path.join('converted',f"%03d{values['type']}" % page_number), quality=80, dpi=(72,72))
-                else: img.save(os.path.join('converted',f"%03d{values['type']}" % page_number), quality=80, dpi=(72,72), icc_profile=icc)
-                window['progbar'].update_bar(int((page_number * 100)/len(values['_FILES_'].split(';'))))
-                page_number = page_number + 1
+                width, height = img.size
+                if(height > 10000):
+                    top = 0
+                    left = 0
+                    slices = int(math.ceil(height/5000))
+                    count = 1
+                    for slice in range(slices):
+                        if count == slices:
+                            bottom = height
+                        else:
+                            bottom = int(count * 5000)  
+
+                        box = (left, top, width, bottom)
+                        img_slice = img.crop(box)
+                        top += 5000
+                        img_slice.save(os.path.join('converted',f"%03d{values['type']}" % page_number), quality=80, dpi=(72, 72), icc_profile=icc)
+                        count += 1
+                        page_number += 1
+                else:
+                    img.save(os.path.join('converted',f"%03d{values['type']}" % page_number), quality=80, dpi=(72, 72), icc_profile=icc)
+                    page_number += 1
             time.sleep(0.1)
             window['progbar'].update_bar(0)
