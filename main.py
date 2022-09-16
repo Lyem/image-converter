@@ -4,13 +4,14 @@ import math
 import os
 Image.MAX_IMAGE_PIXELS = 933120000
 import time
+import pillow_avif
 sg.theme('DarkBlue9')
 
 options = [".jpg", ".png", ".webp"]
 
 layout = [
     [sg.Text('Select your files:')],
-    [sg.Input(key='_FILES_',disabled_readonly_background_color='black', readonly=True), sg.FilesBrowse('Select',file_types=(('image', '*.png'),('image', '*.jpg'),('image', '*.webp'),('image', '*.jpeg'),('image', '*.JPG'),('image', '*.PNG'),('image', '*.JPEG'),('image', '*.WEBP'),('image', '*.PNG'),('image', '*.bmp'),('image', '*.BMP'),('image', '*.dds'),('image', '*.DDS'),('image', '*.dib'),('image', '*.DIB'),('image', '*.eps'),('image', '*.EPS'),('image', '*.icns'),('image', '*.ICNS'),('image', '*.ico'),('image', '*.ICO'),('image', '*.bmp'),('image', '*.BMP')))],
+    [sg.Input(key='_FILES_',disabled_readonly_background_color='black', readonly=True), sg.FilesBrowse('Select',file_types=(('image', '*.png'),('image', '*.jpg'),('image', '*.webp'),('image', '*.jpeg'),('image', '*.JPG'),('image', '*.PNG'),('image', '*.JPEG'),('image', '*.WEBP'),('image', '*.PNG'),('image', '*.bmp'),('image', '*.BMP'),('image', '*.dds'),('image', '*.DDS'),('image', '*.dib'),('image', '*.DIB'),('image', '*.eps'),('image', '*.EPS'),('image', '*.icns'),('image', '*.ICNS'),('image', '*.ico'),('image', '*.ICO'),('image', '*.bmp'),('image', '*.BMP'),('image', '*.avif')))],
     [sg.Text('Convert to:')],
     [sg.OptionMenu(key='type',values=options)],
     [sg.Text('Slice Files:'),sg.Checkbox('', default=False, key="_SLICE_")],
