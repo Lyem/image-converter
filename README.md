@@ -1,9 +1,9 @@
 # Image converter
 
-![exemple](exemple.gif)
+![exemple](assets/exemple.gif)
 
 ### Requirements:
 
 - Python3
 - PySimpleGUI
-- Pillow
+- Wand (ImageMagick)
