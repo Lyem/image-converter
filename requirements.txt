@@ -1,3 +1,0 @@
-PySimpleGUI
-Pillow
-pillow-avif-plugin
