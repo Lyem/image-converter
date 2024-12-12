@@ -14,7 +14,6 @@ jobs:
       matrix:
         config:
           - os: ubuntu-22.04
-          - os: macOS-13
           - os: windows-2019
 
     steps:
@@ -62,9 +61,6 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v4
 
-      - name: Zip file macos
-        run: zip -r imgconverter_macos.zip imgconverter-pyinstaller-artifact-macOS-13/main.app imgconverter-pyinstaller-artifact-macOS-13/main
-
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
@@ -77,4 +73,3 @@ jobs:
           files: |
             imgconverter-pyinstaller-artifact-windows-2019/imgconverter.exe
             imgconverter-pyinstaller-artifact-ubuntu-22.04/imgconverter
-            imgconverter_macos.zip
