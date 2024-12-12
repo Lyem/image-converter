@@ -39,11 +39,11 @@ jobs:
 
       - name: Rename build app for Windows
         if: ${{ matrix.config.os == 'windows-2019' }}
-        run: mv ./dist/__init__.exe ./dist/imgconverter.exe
+        run: mv ./dist/main.exe ./dist/imgconverter.exe
 
       - name: Rename build app for Ubuntu
         if: ${{ matrix.config.os == 'ubuntu-22.04' }}
-        run: mv ./dist/__init__ ./dist/imgconverter
+        run: mv ./dist/main ./dist/imgconverter
 
       - name: Move build directory
         run: mv ./dist ./dist-${{ matrix.config.os }}
@@ -63,7 +63,7 @@ jobs:
         uses: actions/download-artifact@v4
 
       - name: Zip file macos
-        run: zip -r imgconverter_macos.zip imgconverter-pyinstaller-artifact-macos-12/__init__.app imgconverter-pyinstaller-artifact-macos-12/__init__
+        run: zip -r imgconverter_macos.zip imgconverter-pyinstaller-artifact-macos-12/main.app imgconverter-pyinstaller-artifact-macos-12/main
 
       - name: Create Release
         id: create_release
