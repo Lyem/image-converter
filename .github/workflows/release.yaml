@@ -1,0 +1,80 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  build:
+    name: Build app
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - os: ubuntu-22.04
+          - os: macos-12
+          - os: windows-2019
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.12.2"
+
+      - name: Setup Poetry
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: "1.8.3"
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Build
+        run: poetry run build
+
+      - name: Rename build app for Windows
+        if: ${{ matrix.config.os == 'windows-2019' }}
+        run: mv ./dist/__init__.exe ./dist/imgconverter.exe
+
+      - name: Rename build app for Ubuntu
+        if: ${{ matrix.config.os == 'ubuntu-22.04' }}
+        run: mv ./dist/__init__ ./dist/imgconverter
+
+      - name: Move build directory
+        run: mv ./dist ./dist-${{ matrix.config.os }}
+
+      - name: Upload result job ${{ matrix.config.os }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: imgconverter-pyinstaller-artifact-${{ matrix.config.os }}
+          path: ./dist-${{ matrix.config.os }}
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Zip file macos
+        run: zip -r imgconverter_macos.zip imgconverter-pyinstaller-artifact-macos-12/__init__.app imgconverter-pyinstaller-artifact-macos-12/__init__
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
+          files: |
+            imgconverter-pyinstaller-artifact-windows-2019/imgconverter.exe
+            imgconverter-pyinstaller-artifact-ubuntu-22.04/imgconverter
+            imgconverter_macos.zip
